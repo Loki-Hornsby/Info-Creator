@@ -5,7 +5,7 @@
 
 
 ```python
- from PyQt5.QtWidgets import QApplication, QWidget
+from PyQt5.QtWidgets import QApplication, QWidget
 from PyQt5.QtWidgets import QFileDialog
 
 import os
