@@ -1,11 +1,13 @@
-from PyQt5.QtWidgets import QApplication, QWidget
-from PyQt5.QtWidgets import QFileDialog
+from PyQt5.QtWidgets import QApplication, QWidget, QFileDialog, QMessageBox, QPushButton
+from PyQt5.QtGui import QIcon
+from PyQt5.QtCore import pyqtSlot
 
 import os
 import platform
 import sys
 import time
 from datetime import datetime
+import os
 
 class Window(QWidget):
 
@@ -16,12 +18,34 @@ class Window(QWidget):
         # Folder location
         self.Folder = ""
 
+        # Counter
+        self.created = 0
+        self.ignored = 0
+        
         # Get folder location
         self.request_location()
 
-        # Write data to file in folder
-        self.write_to_file()
-        
+        # Set Filename
+        self.fname = "Info.txt"
+
+        # fill folders with text file
+        self.fill_folders()
+
+        # Show finish dialogue
+        self.ShowFinishDialogue()
+
+    def void(self):
+        print("Done!")
+
+    # Finished popup
+    def ShowFinishDialogue(self):
+        self.msgBox = QMessageBox(self)
+        self.msgBox.setIcon(QMessageBox.Information)
+        self.msgBox.setText(str(self.created) + " files created!" + "\n" + str(self.ignored) + " files alreay exist!")
+        self.msgBox.setWindowTitle("Info!")
+        self.msgBox.setStandardButtons(QMessageBox.Ok)
+        self.msgBox.buttonClicked.connect(self.void)
+        self.msgBox.show() # this is so stupid but it makes sense why this exists - took me a good 20 minutes to add this line of code in :P
 
     # Request folder location
     def request_location(self):
@@ -39,16 +63,28 @@ class Window(QWidget):
             print("Not supported!")
 
     # Write info to folder
-    def write_to_file(self):
-        fname = "Info.txt"
-        fpath = self.Folder + "//" + fname
-        
-        if os.path.exists(self.Folder):
-            f = open(fpath, "w+")
-            f.write(self.creation_date(self.Folder))
-            f.close()
+    def fill_folders(self):
+        path = self.Folder + r"/"
+        folders = next(os.walk(path))[1]
+        print(os.listdir())
 
-        quit()
+        for folder in folders:
+            local_path = path + folder + r"/" + self.fname
+            print(local_path)
+                
+            if not os.path.exists(local_path):
+                f = open(local_path, "w+")
+                f.write(self.creation_date(local_path))
+                f.close()
+
+                self.created += 1
+            else:
+                self.ignored += 1
+
+        #print(str(created) + " files created")
+        #print(str(ignored) + " files already created")
+        
+        #quit()
         
 # Run App
 if __name__ == '__main__':
@@ -57,6 +93,9 @@ if __name__ == '__main__':
   
     # create the instance of our Window
     window = Window()
+
+    # Show window
+    #window.show()
 
     sys.exit(App.exec_())
 
