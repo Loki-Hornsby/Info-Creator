@@ -1,0 +1,11 @@
+_________
+
+23/02/22:
+_________
+
++ added Cleaner code
++ added Confirmation window
++ added Always stay on top
++ added Cancel condition
+
+v2.0
